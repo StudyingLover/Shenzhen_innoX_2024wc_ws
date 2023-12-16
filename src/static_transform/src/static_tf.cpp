@@ -3,41 +3,111 @@
 #include"geometry_msgs/TransformStamped.h"
 #include "tf2/LinearMath/Quaternion.h"
 #include <bits/stdc++.h>
+void sendTransform(tf2_ros::StaticTransformBroadcaster &pub, int id, double x, double y){
+    geometry_msgs::TransformStamped ts;
+    ts.header.seq = 100;
+    ts.header.stamp = ros::Time::now();
+    ts.header.frame_id = "map";
+    std::string str_number;
+    if (id < 10) {
+        str_number = "00" + std::to_string(id);
+    } else if (id < 100) {
+        str_number = "0" + std::to_string(id);
+    } else {
+        str_number = std::to_string(id);
+    }
+    ts.child_frame_id = "tag_" + str_number;
+    ts.transform.translation.x = x;
+    ts.transform.translation.y = y;
+    ts.transform.translation.z = 0;
 
+    tf2::Quaternion qtn;
+    qtn.setRPY(0,0,0);
+    ts.transform.rotation.x = qtn.getX();
+    ts.transform.rotation.y = qtn.getY();
+    ts.transform.rotation.z = qtn.getZ();
+    ts.transform.rotation.w = qtn.getW();
+    
+    pub.sendTransform(ts);
+}
 int main(int argc, char  *argv[]){
     ros::init(argc,argv,"static_tf");
     ros::NodeHandle nh;
     tf2_ros::StaticTransformBroadcaster pub ;
 
 
-    int id = 101;
-    double x = 0.3, y = 0.3;
-    for(int i = 1; i <= 9; i ++){
-        for(int j = 1; j <= 13; j ++){
-            geometry_msgs::TransformStamped ts;
-            ts.header.seq = 100;
-            ts.header.stamp = ros::Time::now();
-            ts.header.frame_id = "map";
-            ts.child_frame_id = "tag_" + std::to_string(id);;
-            ts.transform.translation.x = y;
-            ts.transform.translation.y = x;
-            ts.transform.translation.z = 0;
+    int id = 000;
+    for(int i=0;i<5;i++){
+        sendTransform(pub, id, 0.25+i*0.5, 3.25);
+        id++;
+    }
 
-            tf2::Quaternion qtn;
-            qtn.setRPY(0,0,0);
-            ts.transform.rotation.x = qtn.getX();
-            ts.transform.rotation.y = qtn.getY();
-            ts.transform.rotation.z = qtn.getZ();
-            ts.transform.rotation.w = qtn.getW();
-        
-            pub.sendTransform(ts);
+    for(int i=0;i<5;i++){
+        sendTransform(pub, id, 4.75+i*0.5, 3.25);
+        id++;
+    }
+    
+    
+    for(int i=0;i<5;i++){
+        sendTransform(pub, id, 0.25+i*0.5, 2.75);
+        id++;
+    }
+    for(int i=0;i<2;i++){
+        sendTransform(pub, id, 3.25+i*0.5, 2.75);
+        id++;
+    }
+    for(int i=0;i<5;i++){
+        sendTransform(pub, id, 4.75+i*0.5, 2.75);
+        id++;
+    }
+  
 
-            id ++;
-            y += 0.6;
-        }
-        x += 0.6;
-        y = 0.3;
-        //test for git
+  
+
+    for(int i=0;i<3;i++){
+        sendTransform(pub, id, 1.25+i*0.5, 2.25);
+        id++;
+    }
+
+    for(int i=0;i<3;i++){
+        sendTransform(pub, id, 4.75+i*0.5, 2.25);
+        id++;
+    }
+
+    for(int i=0;i<3;i++){
+        sendTransform(pub, id, 1.25+i*0.5, 1.25);
+        id++;
+    }
+
+    for(int i=0;i<3;i++){
+        sendTransform(pub, id, 4.75+i*0.5, 1.25);
+        id++;
+    }
+
+    
+    
+    for(int i=0;i<5;i++){
+        sendTransform(pub, id, 0.25+i*0.5, 0.75);
+        id++;
+    }
+    for(int i=0;i<2;i++){
+        sendTransform(pub, id, 3.25+i*0.5, 0.75);
+        id++;
+    }
+    for(int i=0;i<5;i++){
+        sendTransform(pub, id, 4.75+i*0.5, 0.75);
+        id++;
+    }
+  
+
+    for(int i=0;i<5;i++){
+        sendTransform(pub, id, 0.25+i*0.5, 0.25);
+        id++;
+    }
+
+    for(int i=0;i<5;i++){
+        sendTransform(pub, id, 4.75+i*0.5, 0.25);
+        id++;
     }
 
     ros::spin();
