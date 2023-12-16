@@ -1,0 +1,12 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/kun/文档/GitHub/Shenzhen_innoX_2024wc_ws/devel/lib/python3/dist-packages",
+        "/home/kun/24sentry/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/kun/文档/GitHub/Shenzhen_innoX_2024wc_ws/devel/lib/python3/dist-packages",
+        "/home/kun/24sentry/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ]
+}

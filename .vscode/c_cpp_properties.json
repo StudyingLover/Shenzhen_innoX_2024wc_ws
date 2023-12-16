@@ -1,0 +1,26 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/kun/文档/GitHub/Shenzhen_innoX_2024wc_ws/devel/include/**",
+        "/home/kun/24sentry/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/kun/文档/GitHub/Shenzhen_innoX_2024wc_ws/src/apriltags2/include/**",
+        "/home/kun/文档/GitHub/Shenzhen_innoX_2024wc_ws/src/apriltags2_ros/include/**",
+        "/home/kun/24sentry/src/FAST_LIO/include/**",
+        "/home/kun/文档/GitHub/Shenzhen_innoX_2024wc_ws/src/map_server/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
