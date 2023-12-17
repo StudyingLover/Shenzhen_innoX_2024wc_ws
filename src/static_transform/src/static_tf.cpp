@@ -9,13 +9,13 @@ void sendTransform(tf2_ros::StaticTransformBroadcaster &pub, int id, double x, d
     ts.header.stamp = ros::Time::now();
     ts.header.frame_id = "map";
     std::string str_number;
-    if (id < 10) {
-        str_number = "00" + std::to_string(id);
-    } else if (id < 100) {
-        str_number = "0" + std::to_string(id);
-    } else {
-        str_number = std::to_string(id);
-    }
+    // if (id < 10) {
+    //     str_number = "00" + std::to_string(id);
+    // } else if (id < 100) {
+    //     str_number = "0" + std::to_string(id);
+    // } else {
+    //     str_number = std::to_string(id);
+    // }
     ts.child_frame_id = "tag_" + str_number;
     ts.transform.translation.x = x;
     ts.transform.translation.y = y;
