@@ -10,12 +10,7 @@ typedef enum
 {
   CHASSIS_ODOM_CMD_ID = 0x0301,
   CHASSIS_CTRL_CMD_ID = 0x0302,
-  MESSAGE_ID = 0x0103,
-  SERVO_ID = 0x0104,
-  RC_ID = 0x0105,
-  MOTOR_ID=0x0106,
-  MM_ID=0x0107,
-  RGB_ID=0x108
+  
 } referee_data_cmd_id_type;
 
 typedef  struct
@@ -29,19 +24,19 @@ typedef  struct
 typedef struct
 {
 
-  float S1_angle;
-  float S2_angle;
-  float S3_angle;
-  float S4_angle;
+  float vx;
+  float vy;
+  float vw;
+  
 }  chassis_odom_info_t;
 
 
 typedef struct
 {
 
-  float wheel_speed[4];
-  float wheel_angle[4];
-  uint8_t brake;
+  float vx;
+  float vy;
+  float vw;
 
 }  chassis_ctrl_info_t;
 
