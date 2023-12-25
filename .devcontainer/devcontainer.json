@@ -1,0 +1,48 @@
+{
+    // replace them as you need
+    "name": "Shenzhen-innoX-2024wc",
+    "image": "wzx1210/ros_base:v1.1.0",
+    "features": {
+        "ghcr.io/devcontainers/features/desktop-lite:1": {}
+    },
+    "runArgs": [
+        "--init",
+        "--network=host",
+        "--shm-size=10.24gb",
+        "--user=root",
+        "--shm-size=1g"
+        // "-e",
+        // "DISPLAY=${env:DISPLAY}",
+        // "-v",
+        // "/tmp/.X11-unix:/tmp/.X11-unix"
+    ],
+    "forwardPorts": [
+        6080
+    ],
+    "portsAttributes": {
+        "6080": {
+            "label": "desktop"
+        }
+    },
+    // "forwardPorts": [
+    //     6080,
+    //     5901
+    // ],
+    // "portsAttributes": {
+    //     "6080": {
+    //         "label": "desktop"
+    //     },
+    //     "5901": {
+    //         "label": "VNC"
+    //     }
+    // },
+    // "overrideCommand": false,
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python"
+            ]
+        }
+    },
+    // "postStartCommand": ["/usr/local/share/desktop-init.sh"]
+}
