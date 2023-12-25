@@ -1,7 +1,7 @@
 {
     // replace them as you need
     "name": "Shenzhen-innoX-2024wc",
-    "image": "wzx1210/ros_base:v1.1.0",
+    "image": "wzx1210/2024wc:v1.0.0",
     "features": {
         "ghcr.io/devcontainers/features/desktop-lite:1": {}
     },

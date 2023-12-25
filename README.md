@@ -1,2 +1,10 @@
 # Shenzhen_innoX_2024wc_ws
-Shenzhen innoX  winter camp for high school students 
+
+# ToDO
+- 可视化支持
+
+
+#### 编译工作空间
+```
+catkin_make -DPYTHON_EXECUTABLE=/usr/bin/python3
+```
