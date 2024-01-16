@@ -1,48 +1,32 @@
 {
-    // replace them as you need
     "name": "Shenzhen-innoX-2024wc",
-    "image": "wzx1210/2024wc:v1.0.0",
-    "features": {
-        "ghcr.io/devcontainers/features/desktop-lite:1": {}
-    },
+    "image": "wzx1210/innox2024_wc:v1.0.0",
     "runArgs": [
         "--init",
         "--network=host",
-        "--shm-size=10.24gb",
         "--user=root",
-        "--shm-size=1g"
-        // "-e",
-        // "DISPLAY=${env:DISPLAY}",
-        // "-v",
-        // "/tmp/.X11-unix:/tmp/.X11-unix"
+        "--shm-size=2g",
+        // "--device=/dev/robomaster:/dev/robomaster" （如果你的电脑里没有此设备，请注释此命令，否则导致无法启动。--device=本机逻辑设备名[按实际设置]:容器逻辑设备名[不要改动]）
+        // "--device=/dev/video0:/dev/video0"   （同上）
     ],
     "forwardPorts": [
         6080
     ],
     "portsAttributes": {
         "6080": {
-            "label": "desktop"
+            "label": "Web VNC"
         }
     },
-    // "forwardPorts": [
-    //     6080,
-    //     5901
-    // ],
-    // "portsAttributes": {
-    //     "6080": {
-    //         "label": "desktop"
-    //     },
-    //     "5901": {
-    //         "label": "VNC"
-    //     }
-    // },
-    // "overrideCommand": false,
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-python.python"
-            ]
+				"ms-python.python",
+				"ms-iot.vscode-ros",
+				"twxs.cmake",
+				"MS-CEINTL.vscode-language-pack-zh-hans",
+				"yzhang.markdown-all-in-one"
+			]
         }
-    },
+    }
     // "postStartCommand": ["/usr/local/share/desktop-init.sh"]
 }
