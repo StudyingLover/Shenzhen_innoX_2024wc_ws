@@ -51,7 +51,7 @@
 
 2. 构建开发容器：在vscode中打开项目目录  -> 按 "Ctrl + Shift + P" 打开命令面板 -> 输入"Rebuild and Reopen in Container"构建开发容器。
    ![image.png](https://cdn.nlark.com/yuque/0/2024/png/34306602/1705433073032-015bca1c-9f9c-45db-b712-2552946ef5bc.png#averageHue=%233d474c&clientId=ud3494556-2b48-4&from=paste&height=172&id=u764cce2d&originHeight=215&originWidth=787&originalType=binary&ratio=1.25&rotation=0&showTitle=false&size=24361&status=done&style=none&taskId=uf427a904-ffa2-4792-aa1d-38cf0dc7b3c&title=&width=629.6)
-3. 等待镜像下载完成后，开发容器会自动构建并运行。此时左下角会显示【Shenzhen-innoX-2024wc】，表面已进入开发容器。
+3. 进入开发容器：等待镜像下载完成后，开发容器会自动构建并运行。此时左下角会显示【Shenzhen-innoX-2024wc】，表面已进入开发容器。
    ![image.png](https://cdn.nlark.com/yuque/0/2024/png/34306602/1705433378463-56672b9f-a39c-4708-8195-0eaad32a7b3b.png#averageHue=%232a3439&clientId=ud3494556-2b48-4&from=paste&height=1103&id=u9ed6cd66&originHeight=1379&originWidth=2559&originalType=binary&ratio=1.25&rotation=0&showTitle=false&size=173488&status=done&style=none&taskId=uaea158e0-808e-46ab-940e-df233a96143&title=&width=2047.2)
 4. 编译工作空间：在vscode中的**开发容器终端**中运行以下命令
    ```bash
