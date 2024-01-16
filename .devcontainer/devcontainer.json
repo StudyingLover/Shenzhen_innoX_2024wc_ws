@@ -1,6 +1,6 @@
 {
     "name": "Shenzhen-innoX-2024wc",
-    "image": "wzx1210/innox2024_wc:v1.0.0",
+    "image": "wzx1210/innox2024_wc:v1.0.1",
     "runArgs": [
         "--init",
         "--network=host",
