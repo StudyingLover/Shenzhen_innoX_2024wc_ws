@@ -9,7 +9,7 @@
 | 2024.1.17 | v1.0.1 | 更新镜像支持可视化展示、支持"/dev/robomaster"（未测试）、支持"/dev/video"（未测试）|
 | 2024.1.18 | v1.0.2 | 安装缺少库，支持摄像头 |
 
-## ToDO
+## ToDo
 
 - 测试硬件通讯（线下测试）
 - 完善文档
@@ -28,7 +28,7 @@
 
 |          | Linux | Windows                     | PI | Macos |
 | -------- | ----- | --------------------------- | -- | ----- |
-| 测试镜像 | wzx1210/innox2024_wc:v1.0.1      | wzx1210/innox2024_wc:v1.0.1 |    |       |
+| 测试镜像 | wzx1210/innox2024_wc:v1.0.2      | wzx1210/innox2024_wc:v1.0.1 |    |       |
 | 可以启动 | √    | √                          |    |       |
 | 可视化   | √     | √                          |    |       |
 | 硬件通讯（USB_CAM） | √     | ×                          |    |       |
@@ -88,4 +88,5 @@
    ![image.png](https://cdn.nlark.com/yuque/0/2024/png/34306602/1705434362352-925ec0bd-fb54-4fea-acaf-ee49c048df30.png#averageHue=%233b474f&clientId=ud3494556-2b48-4&from=paste&height=452&id=u6ea22e98&originHeight=1303&originWidth=2063&originalType=binary&ratio=1.25&rotation=0&showTitle=false&size=392216&status=done&style=none&taskId=uac21f97e-badc-4817-a729-c1d085647e8&title=&width=715)
 
 wzx1210
+
 2023.1.18
