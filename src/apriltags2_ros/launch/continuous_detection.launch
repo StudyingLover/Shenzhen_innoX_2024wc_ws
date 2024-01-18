@@ -1,6 +1,6 @@
 <launch>
 
-<include file="$(find usb_cam)/launch/usb_cam-test.launch" />
+<include file="$(find usb_cam)/launch/usb_cam.launch" />
 
   <arg name="launch_prefix" default="" /> <!-- set to value="gdbserver localhost:10000" for remote debugging -->
   <arg name="node_namespace" default="apriltags2_ros_continuous_node" />

@@ -34,7 +34,8 @@
 				"ms-iot.vscode-ros",
 				"twxs.cmake",
 				"MS-CEINTL.vscode-language-pack-zh-hans",
-				"yzhang.markdown-all-in-one"
+				"yzhang.markdown-all-in-one",
+				"ms-vscode.cmake-tools"
 			]
         }
     }
