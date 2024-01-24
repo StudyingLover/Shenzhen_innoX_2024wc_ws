@@ -1,7 +1,7 @@
 <launch>
     <include file='$(find usb_cam)/launch/usb_cam.launch'/>
        <!-- Run the EP base -->
-    <!-- <include file='$(find rmep_base)/launch/rmep_base.launch' />  -->
+    <!-- <include file='$(find simple_robot)/launch/robot.launch' />  -->
     
         <!-- Run the map server -->
 

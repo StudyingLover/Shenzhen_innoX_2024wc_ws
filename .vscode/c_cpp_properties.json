@@ -14,6 +14,7 @@
         "/workspaces/Shenzhen_innoX_2024wc_ws/src/odom_calib/include/**",
         "/workspaces/Shenzhen_innoX_2024wc_ws/src/simple_robot/include/**",
         "/workspaces/Shenzhen_innoX_2024wc_ws/src/usb_cam/include/**",
+        "/workspaces/Shenzhen_innoX_2024wc_ws/src/mavlink2ros/include/FishCom/**",
         "/usr/include/**"
       ],
       "name": "ROS",
