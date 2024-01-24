@@ -40,12 +40,15 @@ uint8_t MyTask() {
         if (serial_device.available()) {
 
             RxLen = serial_device.read(rxbuf, sizeof(rxbuf));
-            printf("1111111111111111111111111111111111111111111111111111111");
+            printf("size of rxbuf: %d\n",sizeof(rxbuf));
             /*收到新数据*/
             for (int i = 0; i < RxLen; i++) {
                     /*解包*/
+                    printf("解第 %d 个包\n", i);
+                    printf("Byte %d: 0x%02X\n", i, rxbuf[i]);
                     /*MavlinkV2出现错误包后，再次接收二个正常包后恢复正常解析，但第一个正常包将丢失，第二个可被正确解析*/
                     if (mavlink_parse_char(chan, rxbuf[i], msg, &status)) {
+                        printf("第 %d 个包，解包成功\n",i);
                         /*解析包成功 处理数据*/
                         switch (msg->msgid) {
                             case MAVLINK_MSG_ID_CHS_MOTOR_INFO: {

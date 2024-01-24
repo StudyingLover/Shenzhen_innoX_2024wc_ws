@@ -1,6 +1,6 @@
 {
     "name": "Shenzhen-innoX-2024wc",
-    "image": "wzx1210/innox2024_wc:v1.0.3",
+    "image": "wzx1210/innox2024_wc:v1.0.4",
     // "features": {
     //     "ghcr.io/devcontainers/features/desktop-lite:1": {}
     // },
