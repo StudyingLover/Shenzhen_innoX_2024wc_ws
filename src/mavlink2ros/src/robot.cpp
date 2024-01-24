@@ -7,15 +7,25 @@
 #include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
 #include <nav_msgs/Odometry.h>
-#include "serial_device.h"
+// #include "serial_device.h"
+#include <serial/serial.h>
 
 class RobotController {
 public:
-    RobotController() : serial_device("/dev/robomaster", 115200) {
-        if (!serial_device.Init()) {
-            std::cerr << "Failed to initialize serial device." << std::endl;
+    RobotController() : serial_device("/dev/robomaster", 115200, serial::Timeout::simpleTimeout(1000)) {
+        try {
+            serial_device.open();
+        } catch (serial::IOException& e) {
+            ROS_ERROR_STREAM("Unable to open port ");
             exit(-1);
         }
+
+        if (serial_device.isOpen()) {
+            ROS_INFO_STREAM("Serial Port initialized");
+        } else {
+            exit(-1);
+        }
+
         sub = nh.subscribe("cmd_vel", 1000, &RobotController::cmdVelCallback, this);
     }
 
@@ -37,7 +47,10 @@ public:
 
         Txlen = mavlink_msg_to_send_buffer(txbuf, msg);
 
-        serial_device.Write(txbuf, Txlen);
+        if(serial_device.isOpen()) {
+            serial_device.write(txbuf, Txlen);
+        }
+
         free((void *)txbuf);
         free((void *)msg);
     }
@@ -45,7 +58,7 @@ public:
 private:
     ros::NodeHandle nh;
     ros::Subscriber sub;
-    robomaster::SerialDevice serial_device;
+    serial::Serial serial_device;  // 使用serial库的Serial类
 };
 
 int main(int argc, char** argv){
