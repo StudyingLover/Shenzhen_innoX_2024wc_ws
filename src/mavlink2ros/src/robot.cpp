@@ -57,30 +57,24 @@ public:
         nav_msgs::Odometry odom_msg;
         geometry_msgs::TransformStamped transform_stamped;
 
-        // 设置里程计消息
         odom_msg.header.stamp = ros::Time::now();
         odom_msg.header.frame_id = "odom";
         odom_msg.child_frame_id = "base_link";
 
-        // 设置位置 (这里假设我们没有位置信息，所以设置为0)
         odom_msg.pose.pose.position.x = 0;
         odom_msg.pose.pose.position.y = 0;
         odom_msg.pose.pose.position.z = 0;
 
-        // 设置方向
         tf2::Quaternion quat;
         quat.setValue(odom_info.quaternion[0], odom_info.quaternion[1], odom_info.quaternion[2], odom_info.quaternion[3]);
         odom_msg.pose.pose.orientation = tf2::toMsg(quat);
 
-        // 设置速度
         odom_msg.twist.twist.linear.x = odom_info.vx;
         odom_msg.twist.twist.linear.y = odom_info.vy;
         odom_msg.twist.twist.angular.z = odom_info.vw;
 
-        // 发布里程计消息
         odom_pub.publish(odom_msg);
 
-        // 设置TF变换
         transform_stamped.header.stamp = odom_msg.header.stamp;
         transform_stamped.header.frame_id = "odom";
         transform_stamped.child_frame_id = "base_link";
@@ -89,7 +83,6 @@ public:
         transform_stamped.transform.translation.z = odom_msg.pose.pose.position.z;
         transform_stamped.transform.rotation = odom_msg.pose.pose.orientation;
 
-        // 发送TF变换
         tf_broadcaster.sendTransform(transform_stamped);
     }
     void receiveData() {
