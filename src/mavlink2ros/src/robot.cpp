@@ -14,13 +14,13 @@
 class RobotController {
 public:
     RobotController(const std::string& port, int baud_rate) : 
-        serial_device(port, baud_rate, serial::Timeout::simpleTimeout(1000)) 
+        serial_device(port, baud_rate, serial::Timeout::simpleTimeout(1000)),
+        chassis_odom_pub_(nh.advertise<nav_msgs::Odometry>("odom", 50))
     {
         if (!serial_device.isOpen()) {
             std::cerr << "Failed to open serial port." << std::endl;
         }
 
-        odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 50);
         sub = nh.subscribe("cmd_vel", 1000, &RobotController::cmdVelCallback, this);
         receive_thread = std::thread(&RobotController::receiveData, this);
 
@@ -28,6 +28,11 @@ public:
         manage_timer = nh.createTimer(ros::Duration(1.0), &RobotController::sendManageInfoRegularly, this);
         control_timer = nh.createTimer(ros::Duration(0.01), &RobotController::sendCtrlInfoRegularly, this);
         
+        chassis_odom_pub_=nh.advertise<nav_msgs::Odometry>("odom",1);
+        odom_.header.frame_id = "odom";
+        odom_.child_frame_id = "base_link";
+        odom_tf_.header.frame_id = "odom";
+        odom_tf_.child_frame_id = "base_link";
     }
 
     ~RobotController() {
@@ -84,39 +89,39 @@ public:
         current_twist = *msg;
     }
 
-    void publishOdometry(const mavlink_chs_odom_info_t& odom_info) {
-        nav_msgs::Odometry odom_msg;
-        geometry_msgs::TransformStamped transform_stamped;
+    // void publishOdometry(const mavlink_chs_odom_info_t& odom_info) {
+    //     nav_msgs::Odometry odom_msg;
+    //     geometry_msgs::TransformStamped transform_stamped;
 
-        odom_msg.header.stamp = ros::Time::now();
-        odom_msg.header.frame_id = "odom";
-        odom_msg.child_frame_id = "base_link";
+    //     odom_msg.header.stamp = ros::Time::now();
+    //     odom_msg.header.frame_id = "odom";
+    //     odom_msg.child_frame_id = "base_link";
 
-        odom_msg.pose.pose.position.x = 0;
-        odom_msg.pose.pose.position.y = 0;
-        odom_msg.pose.pose.position.z = 0;
+    //     odom_msg.pose.pose.position.x = 0;
+    //     odom_msg.pose.pose.position.y = 0;
+    //     odom_msg.pose.pose.position.z = 0;
 
-        tf2::Quaternion quat;
-        quat.setValue(odom_info.quaternion[0], odom_info.quaternion[1], odom_info.quaternion[2], odom_info.quaternion[3]);
-        quat.normalize();
-        odom_msg.pose.pose.orientation = tf2::toMsg(quat);
+    //     tf2::Quaternion quat;
+    //     quat.setValue(odom_info.quaternion[0], odom_info.quaternion[1], odom_info.quaternion[2], odom_info.quaternion[3]);
+    //     quat.normalize();
+    //     odom_msg.pose.pose.orientation = tf2::toMsg(quat);
 
-        odom_msg.twist.twist.linear.x = odom_info.vx;
-        odom_msg.twist.twist.linear.y = odom_info.vy;
-        odom_msg.twist.twist.angular.z = odom_info.vw;
+    //     odom_msg.twist.twist.linear.x = odom_info.vx;
+    //     odom_msg.twist.twist.linear.y = odom_info.vy;
+    //     odom_msg.twist.twist.angular.z = odom_info.vw;
 
-        odom_pub.publish(odom_msg);
+    //     odom_pub.publish(odom_msg);
 
-        transform_stamped.header.stamp = odom_msg.header.stamp;
-        transform_stamped.header.frame_id = "odom";
-        transform_stamped.child_frame_id = "base_link";
-        transform_stamped.transform.translation.x = odom_msg.pose.pose.position.x;
-        transform_stamped.transform.translation.y = odom_msg.pose.pose.position.y;
-        transform_stamped.transform.translation.z = odom_msg.pose.pose.position.z;
-        transform_stamped.transform.rotation = odom_msg.pose.pose.orientation;
+    //     transform_stamped.header.stamp = odom_msg.header.stamp;
+    //     transform_stamped.header.frame_id = "odom";
+    //     transform_stamped.child_frame_id = "base_link";
+    //     transform_stamped.transform.translation.x = odom_msg.pose.pose.position.x;
+    //     transform_stamped.transform.translation.y = odom_msg.pose.pose.position.y;
+    //     transform_stamped.transform.translation.z = odom_msg.pose.pose.position.z;
+    //     transform_stamped.transform.rotation = odom_msg.pose.pose.orientation;
 
-        tf_broadcaster.sendTransform(transform_stamped);
-    }
+    //     tf_broadcaster.sendTransform(transform_stamped);
+    // }
     void receiveData() {
         while (ros::ok()) {
             if (serial_device.available()) {
@@ -153,8 +158,45 @@ public:
                                 printf("quaternion: ");
                                 for(int i = 0; i < 4; i++) printf("%f ", odom_info.quaternion[i]);
                                 printf("\n");
-                                publishOdometry(odom_info);
-                                break;  
+
+                                // publishOdometry(odom_info);
+                                current_time = ros::Time::now();
+                                double dt = (current_time - last_time).toSec();
+
+                                // 使用从 MAVLink 消息接收到的速度来更新位置和姿态
+                                double delta_x = (odom_info.vx * cos(th) - odom_info.vy * sin(th)) * dt;
+                                double delta_y = (odom_info.vx * sin(th) + odom_info.vy * cos(th)) * dt;
+                                double delta_th = odom_info.vw * dt;
+
+                                x += delta_x;
+                                y += delta_y;
+                                th += delta_th;
+
+                                // 更新里程计消息
+                                odom_.header.stamp = current_time;
+                                odom_.twist.twist.linear.x = odom_info.vx;
+                                odom_.twist.twist.linear.y = odom_info.vy;
+                                odom_.twist.twist.angular.z = odom_info.vw;
+
+                                geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(th);
+                                odom_.pose.pose.position.x = x;
+                                odom_.pose.pose.position.y = y;
+                                odom_.pose.pose.position.z = 0.0;
+                                odom_.pose.pose.orientation = odom_quat;
+
+                                // 发布里程计消息
+                                chassis_odom_pub_.publish(odom_);
+
+                                // 发布 TF 变换
+                                odom_tf_.header.stamp = current_time;
+                                odom_tf_.transform.translation.x = x;
+                                odom_tf_.transform.translation.y = y;
+                                odom_tf_.transform.translation.z = 0.0;
+                                odom_tf_.transform.rotation = odom_quat;
+                                tf_broadcaster_.sendTransform(odom_tf_);
+
+                                last_time = current_time;
+                                break;
                             }
                             case MAVLINK_MSG_ID_CHS_MOTOR_INFO: {
                                 mavlink_msg_chs_motor_info_decode(msg, &motor_info);
@@ -198,13 +240,22 @@ private:
     ros::Subscriber sub;
     serial::Serial serial_device;
     std::thread receive_thread;
-    ros::Publisher odom_pub;
-    tf::TransformBroadcaster tf_broadcaster;
+    // ros::Publisher odom_pub;
+    // tf::TransformBroadcaster tf_broadcaster;
     geometry_msgs::Twist current_twist; 
 
     ros::Timer manage_timer;
     ros::Timer control_timer;
     std::mutex twist_mutex;
+
+    tf::TransformBroadcaster tf_broadcaster_;//! ros chassis odometry tf broadcaster
+    ros::Publisher chassis_odom_pub_;//! ros odometry message publisher
+    geometry_msgs::TransformStamped odom_tf_;//! ros chassis odometry tf
+    nav_msgs::Odometry odom_;//! ros odometry message
+    double x = 0.0;
+    double y = 0.0;
+    double th = 0.0;
+    ros::Time current_time = ros::Time::now(), last_time = ros::Time::now();
 }; 
 
 int main(int argc, char** argv) {

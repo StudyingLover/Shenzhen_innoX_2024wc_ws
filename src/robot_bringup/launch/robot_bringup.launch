@@ -1,11 +1,10 @@
 <launch>
     <include file='$(find usb_cam)/launch/usb_cam.launch'/>
        <!-- Run the EP base -->
-        <include file='$(find mavlink2ros)/launch/robot.launch' />
+    <include file='$(find mavlink2ros)/launch/robot.launch' />
     
         <!-- Run the map server -->
-
-   <include file='$(find map_server)/launch/innox2024_wc.launch' />
+    <include file='$(find map_server)/launch/innox2024_wc.launch' />
 
         <!-- Run the static TF publisher from base to cam ypr-->
     <node pkg="tf2_ros" type="static_transform_publisher" name="odom_base" args="1 1 0 0 0 0 odom base_link" />
