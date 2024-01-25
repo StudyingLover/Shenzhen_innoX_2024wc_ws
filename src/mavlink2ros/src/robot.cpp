@@ -37,7 +37,7 @@ public:
     }
 
     void sendManageInfoRegularly(const ros::TimerEvent&) {
-        sendManageInfo(1, 1, 1);
+        sendManageInfo(1, 1, 0);
     }
 
     void sendCtrlInfoRegularly(const ros::TimerEvent&) {
