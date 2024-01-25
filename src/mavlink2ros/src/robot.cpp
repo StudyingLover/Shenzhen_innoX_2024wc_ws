@@ -16,23 +16,18 @@ public:
     RobotController(const std::string& port, int baud_rate) : 
         serial_device(port, baud_rate, serial::Timeout::simpleTimeout(1000)) 
     {
-        try {
-            serial_device.open();
-        } catch (serial::IOException& e) {
-            ROS_ERROR_STREAM("Unable to open port " << port);
-            exit(-1);
-        }
-
-        if (serial_device.isOpen()) {
-            ROS_INFO_STREAM("Serial Port initialized");
-        } else {
-            ROS_ERROR_STREAM("Failed to open serial port.");
-            exit(-1);
+        if (!serial_device.isOpen()) {
+            std::cerr << "Failed to open serial port." << std::endl;
         }
 
         odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 50);
         sub = nh.subscribe("cmd_vel", 1000, &RobotController::cmdVelCallback, this);
         receive_thread = std::thread(&RobotController::receiveData, this);
+
+        // Regularly Msg
+        manage_timer = nh.createTimer(ros::Duration(1.0), &RobotController::sendManageInfoRegularly, this);
+        control_timer = nh.createTimer(ros::Duration(0.01), &RobotController::sendCtrlInfoRegularly, this);
+        
     }
 
     ~RobotController() {
@@ -41,18 +36,54 @@ public:
         }
     }
 
-    void cmdVelCallback(const geometry_msgs::Twist::ConstPtr& twistMsg) {
-        mavlink_message_t msg;
-        uint8_t buf[MAVLINK_MSG_ID_CHS_CTRL_INFO_LEN + 12];
+    void sendManageInfoRegularly(const ros::TimerEvent&) {
+        sendManageInfo(1, 1, 1);
+    }
+
+    void sendCtrlInfoRegularly(const ros::TimerEvent&) {
+        std::lock_guard<std::mutex> lock(twist_mutex); // 确保线程安全
+        sendCtrlInfo(current_twist.linear.x, current_twist.linear.y, current_twist.angular.z);
+    }
+
+    void sendManageInfo(bool enable_chassis,bool enable_servos,bool reset_quaternion){
+        mavlink_message_t *msg = (mavlink_message_t *)malloc(sizeof(mavlink_message_t));
+        memset(msg, 0, sizeof(mavlink_message_t));
+
+        uint16_t Txlen = 0;
+        uint8_t *txbuf = (uint8_t *)malloc(MAVLINK_MSG_ID_CHS_CTRL_INFO_LEN + 12);
+
+        mavlink_msg_chs_manage_info_pack(
+            CHS_SYSTEM_ID::CHS_ID_ORANGE,
+            CHS_SYSTEM_ID::CHS_ID_ORANGE, 
+            msg, enable_chassis, enable_servos, reset_quaternion);
+        
+        Txlen = mavlink_msg_to_send_buffer(txbuf, msg);
+
+        serial_device.write(txbuf, Txlen);
+    }
+
+    void sendCtrlInfo(float vx, float vy, float vz){
+        mavlink_message_t *msg = (mavlink_message_t *)malloc(sizeof(mavlink_message_t));
+        memset(msg, 0, sizeof(mavlink_message_t));
+
+        uint16_t Txlen = 0;
+        uint8_t *txbuf = (uint8_t *)malloc(MAVLINK_MSG_ID_CHS_CTRL_INFO_LEN + 12);
+
         mavlink_msg_chs_ctrl_info_pack(
             CHS_SYSTEM_ID::CHS_ID_ORANGE,
             CHS_SYSTEM_ID::CHS_ID_ORANGE, 
-            &msg, 
-            twistMsg->linear.x, twistMsg->linear.y, twistMsg->angular.z);
+            msg, 
+            vx, vy, vz);
         
-        size_t len = mavlink_msg_to_send_buffer(buf, &msg);
-        serial_device.write(buf, len);
+        Txlen = mavlink_msg_to_send_buffer(txbuf, msg);
+
+        serial_device.write(txbuf, Txlen);
     }
+
+    void cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg) {
+        current_twist = *msg;
+    }
+
     void publishOdometry(const mavlink_chs_odom_info_t& odom_info) {
         nav_msgs::Odometry odom_msg;
         geometry_msgs::TransformStamped transform_stamped;
@@ -67,6 +98,7 @@ public:
 
         tf2::Quaternion quat;
         quat.setValue(odom_info.quaternion[0], odom_info.quaternion[1], odom_info.quaternion[2], odom_info.quaternion[3]);
+        quat.normalize();
         odom_msg.pose.pose.orientation = tf2::toMsg(quat);
 
         odom_msg.twist.twist.linear.x = odom_info.vx;
@@ -88,7 +120,9 @@ public:
     void receiveData() {
         while (ros::ok()) {
             if (serial_device.available()) {
-                mavlink_message_t *msg;
+                mavlink_message_t *msg = (mavlink_message_t *)malloc(sizeof(mavlink_message_t));
+                memset(msg, 0, sizeof(mavlink_message_t));
+
                 mavlink_status_t status;
                 uint8_t rxbuf[512];
                 size_t RxLen = serial_device.read(rxbuf, sizeof(rxbuf));
@@ -101,9 +135,10 @@ public:
                 mavlink_chs_remoter_info_t remoter_info;
 
                 for (size_t i = 0; i < RxLen; ++i) {
-                    printf("Byte %ld: 0x%02X\n", i, rxbuf[i]);
+                    // printf("Byte %ld: 0x%02X\n", i, rxbuf[i]);
                     if (mavlink_parse_char(MAVLINK_COMM_0, rxbuf[i], msg, &status)) {
                         printf("第 %ld 个包，解包成功\n",i);
+                        printf("%d",msg->msgid);
                         switch (msg->msgid) {
                             case MAVLINK_MSG_ID_CHS_CTRL_INFO: {
                                 mavlink_msg_chs_ctrl_info_decode(msg, &ctrl_info);
@@ -165,7 +200,12 @@ private:
     std::thread receive_thread;
     ros::Publisher odom_pub;
     tf::TransformBroadcaster tf_broadcaster;
-};
+    geometry_msgs::Twist current_twist; 
+
+    ros::Timer manage_timer;
+    ros::Timer control_timer;
+    std::mutex twist_mutex;
+}; 
 
 int main(int argc, char** argv) {
     ros::init(argc, argv, "robot_controller");
