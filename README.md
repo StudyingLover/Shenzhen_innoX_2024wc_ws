@@ -6,22 +6,26 @@
 
 | 时间 | tag | 说明 |
 | --------- | ------ | ------------------------------------------------------------------------- |
-| 2024.1.17 | v1.0.1 | 更新镜像支持可视化展示、支持"/dev/robomaster"（未测试）、支持"/dev/video"（未测试）|
-| 2024.1.18 | v1.0.2 | 安装缺少库，支持摄像头 |
-| 2024.1.24 | v1.0.3 | 安装putty等串口调试工具，验证所有硬件支持 |
-| 2024.1.24 | v1.0.4 | 安装串口库 |
-| 2024.1.25 | v1.0.5 | 配置ekf包系统环境 |
-## ToDo
+| 2024.1.17 | wzx1210/innox2024_wc:v1.0.1 | 更新镜像支持可视化展示、支持"/dev/robomaster"（未测试）、支持"/dev/video"（未测试）|
+| 2024.1.18 | wzx1210/innox2024_wc:v1.0.2 | 安装缺少库，支持摄像头 |
+| 2024.1.24 | wzx1210/innox2024_wc:v1.0.3 | 安装putty等串口调试工具 |
+| 2024.1.24 | wzx1210/innox2024_wc:v1.0.4 | 安装串口库 |
 
-- 测试硬件通讯（线下测试）
-- 完善文档
-- docker buildx支持
+| 2024.1.24 | wzx1210/innox2024_wc:v2.0.0 | 【弃用】基础镜像：arm64v8/ubuntu:focal |
+| 2024.1.24 | wzx1210/innox2024_wc:v2.0.1 | 【弃用】更换系统源，安装ros，安装python并换源，修改系统时区，安装git、vim，putty等常用工具 |
+| 2024.1.24 | wzx1210/innox2024_wc:v2.0.2 | 【弃用】配置工作空间环境 |
+| 2024.1.24 | wzx1210/innox2024_wc:v2.0.3 | 【弃用】支持可视化 |
+
+| 时间 | tag | 说明 |
+| --------- | ------ | ------------------------------------------------------------------------- |
+| 2024.1.26 | registry.cn-hangzhou.aliyuncs.com/wzx1210/innox2024_wc:v3.0.0 |  ros基础镜像|
+| 2024.1.26 | registry.cn-hangzhou.aliyuncs.com/wzx1210/innox2024_wc:v3.0.1 |  更新配置
 
 ## 环境说明
 
 - Docker-Image: wzx1210/innox2024_wc:v1.0.1
 - Ubuntu 20.04
-- Ros Neotic Full
+- Ros Neotic 
 - Mamba
 - vscode-plugin: cmake / ros / c++ / python
 - docker-network-mode: bridge
@@ -30,11 +34,11 @@
 
 |          | Linux | Windows                     | PI | Macos |
 | -------- | ----- | --------------------------- | -- | ----- |
-| 测试镜像 | wzx1210/innox2024_wc:v1.0.2      | wzx1210/innox2024_wc:v1.0.1 |    |       |
-| 可以启动 | √    | √                          |    |       |
-| 可视化   | √     | √                          |    |       |
-| 硬件通讯（USB_CAM） | √     | ×                          |    |       |
-| 硬件通讯（下位机） |       |                           |    |       |
+| 测试镜像 | wzx1210/innox2024_wc:v1.0.2      | wzx1210/innox2024_wc:v1.0.1 | registry.cn-hangzhou.aliyuncs.com/wzx1210/innox2024_wc:v3.0.1   |       |
+| 可以启动 | √    | √                          |   √  |       |
+| 可视化   | √     | √                          |  √   |       |
+| 硬件通讯（USB_CAM） | √     | ×                          |  √   |       |
+| 硬件通讯（下位机） |  √      |                           |  √   |       |
 
 ## workflow
 
@@ -48,6 +52,21 @@
    3. 可以通过devcontainer.json配置文件，快速修改和分发容器配置。
    4. 与vscode深度融合，一键启动，无需任何命令
 
+# OrangePi (营期使用)
+1. 在你的电脑上安装vscode
+   https://code.visualstudio.com/
+2. 打开vscode,并安装remote SSH插件
+   ![Alt text](6330b9f66bda98285e48e2ce6f883f8.png)
+3. 远程连接Pi
+   ![Alt text](37782d5f277e19f68e1bf8c0e6273ee.png)
+4. 在Pi中克隆工作空间
+   ```bash
+   git clone https://github.com/RM-camp-for-high-school-students/Shenzhen_innoX_2024wc_ws.git
+   ```
+5. 在vscode中打开刚刚克隆的工作空间工作空间
+   
+
+# X86
 ## 环境准备
 
 理论上支持任何可以安装以下准备环境的平台（arm平台未测试），如：Windows、Linux（如需连接硬件请使用linux）、MacOS
