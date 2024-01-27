@@ -71,13 +71,6 @@
 
 [0127更新文档](doc.md)
 
-理论上支持任何可以安装以下准备环境的平台（arm平台未测试），如：Windows、Linux（如需连接硬件请使用linux）、MacOS
-
-1. 安装docker
-   1. 如果安装的是Docker Desktop，请在使用前启动Docker Engine
-2. 安装vscode
-3. 在vscode中安装devcontainer插件
-   1. 建议保持版本一致 v0.299.0![image.png](https://cdn.nlark.com/yuque/0/2024/png/34306602/1705432899215-ce85fd14-8fca-469b-a669-61271b1e4ba2.png#averageHue=%232d3c47&clientId=ud3494556-2b48-4&from=paste&height=170&id=u74ceae26&originHeight=213&originWidth=1147&originalType=binary&ratio=1.25&rotation=0&showTitle=false&size=36225&status=done&style=none&taskId=uc9dc4c6a-b87d-4d22-b69b-89bd0cb0ba5&title=&width=917.6)
 
 ## 使用教程
 
