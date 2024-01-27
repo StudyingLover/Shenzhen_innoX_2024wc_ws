@@ -69,6 +69,8 @@
 # X86
 ## 环境准备
 
+[0127更新文档](doc.md)
+
 理论上支持任何可以安装以下准备环境的平台（arm平台未测试），如：Windows、Linux（如需连接硬件请使用linux）、MacOS
 
 1. 安装docker
